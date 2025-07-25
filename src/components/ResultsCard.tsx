@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Target, PiggyBank, TrendingUp, AlertCircle } from 'lucide-react-native';
+import { Target, PiggyBank, TrendingUp, CircleAlert as AlertCircle } from 'lucide-react-native';
 import { formatCurrency } from '../hooks/useSipCalculator';
 
 interface ResultsCardProps {
