@@ -131,6 +131,8 @@ export const SipCalculator: React.FC = () => {
                 <Input
                   id="duration"
                   type="number"
+                  step="0.5"
+                  min="0.5"
                   value={inputs.investmentDuration}
                   onChange={(e) => updateInput('investmentDuration', Number(e.target.value))}
                   className={`text-lg ${getFieldError('investmentDuration') ? 'border-destructive' : ''}`}

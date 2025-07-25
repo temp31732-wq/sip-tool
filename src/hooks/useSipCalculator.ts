@@ -39,12 +39,14 @@ export const useSipCalculator = () => {
     if (sipInputs.monthlyInvestment <= 0) {
       newErrors.push({
         field: 'monthlyInvestment',
-        message: 'SIP amount must be greater than zero'
+        message: sipInputs.monthlyInvestment === 0 
+          ? 'Investment must be greater than 0'
+          : 'Invalid input - investment cannot be negative'
       });
     } else if (sipInputs.monthlyInvestment > 100000000) { // 10 crore
       newErrors.push({
         field: 'monthlyInvestment',
-        message: 'SIP amount cannot exceed ₹10 crore'
+        message: 'Investment amount exceeds ₹10 crore limit'
       });
     }
 
@@ -52,25 +54,56 @@ export const useSipCalculator = () => {
     if (sipInputs.annualReturnRate < 0) {
       newErrors.push({
         field: 'annualReturnRate',
-        message: 'Return rate cannot be negative'
+        message: 'Invalid input - return rate cannot be negative'
       });
     } else if (sipInputs.annualReturnRate > 100) {
-      newErrors.push({
-        field: 'annualReturnRate',
-        message: 'Return rate cannot exceed 100%'
-      });
+      if (sipInputs.annualReturnRate > 999) {
+        newErrors.push({
+          field: 'annualReturnRate',
+          message: 'Return rate is extremely unrealistic (max 999%)'
+        });
+      } else {
+        newErrors.push({
+          field: 'annualReturnRate',
+          message: 'Interest seems unrealistic (>100% annual return)'
+        });
+      }
     }
 
     // Investment Duration validation
-    if (sipInputs.investmentDuration < 1) {
+    if (sipInputs.investmentDuration < 0.5) {
       newErrors.push({
         field: 'investmentDuration',
-        message: 'Duration must be at least 1 year'
+        message: sipInputs.investmentDuration <= 0
+          ? 'Investment duration must be at least 0.5 years'
+          : 'Investment duration must be at least 0.5 years'
       });
     } else if (sipInputs.investmentDuration > 100) {
       newErrors.push({
         field: 'investmentDuration',
-        message: 'Duration cannot exceed 100 years'
+        message: 'Unrealistic time frame (>100 years) - consider shorter duration'
+      });
+    }
+
+    // Check for empty/invalid fields
+    if (isNaN(sipInputs.monthlyInvestment) || sipInputs.monthlyInvestment === null || sipInputs.monthlyInvestment === undefined) {
+      newErrors.push({
+        field: 'monthlyInvestment',
+        message: 'Monthly investment is required'
+      });
+    }
+
+    if (isNaN(sipInputs.annualReturnRate) || sipInputs.annualReturnRate === null || sipInputs.annualReturnRate === undefined) {
+      newErrors.push({
+        field: 'annualReturnRate',
+        message: 'Annual return rate is required'
+      });
+    }
+
+    if (isNaN(sipInputs.investmentDuration) || sipInputs.investmentDuration === null || sipInputs.investmentDuration === undefined) {
+      newErrors.push({
+        field: 'investmentDuration',
+        message: 'Investment duration is required'
       });
     }
 
@@ -84,14 +117,6 @@ export const useSipCalculator = () => {
     const totalMonths = investmentDuration * 12;
     const totalInvested = monthlyInvestment * totalMonths;
 
-    console.log('Test Case Debug:', {
-      P: monthlyInvestment,
-      'Annual Rate': annualReturnRate,
-      'Monthly Rate': monthlyRate,
-      'Total Months': totalMonths,
-      'Total Invested': totalInvested
-    });
-
     let maturityValue: number;
 
     // Handle zero interest rate case
@@ -102,12 +127,6 @@ export const useSipCalculator = () => {
       const compound = Math.pow(1 + monthlyRate, totalMonths);
       const numerator = (compound - 1) / monthlyRate;
       maturityValue = monthlyInvestment * numerator * (1 + monthlyRate);
-      
-      console.log('SIP Calculation Debug:', {
-        compound: compound,
-        numerator: numerator,
-        'Final FV': maturityValue
-      });
     }
 
     const totalInterest = maturityValue - totalInvested;
