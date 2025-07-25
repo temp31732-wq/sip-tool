@@ -9,6 +9,7 @@ interface ResultsCardProps {
   totalInvested: number;
   totalInterest: number;
   maturityValue: number;
+  monthlyInvestment: number;
   isValid: boolean;
 }
 
@@ -16,6 +17,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({
   totalInvested,
   totalInterest,
   maturityValue,
+  monthlyInvestment,
   isValid,
 }) => {
   if (!isValid) {
@@ -124,7 +126,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({
           <div className="text-center space-y-2">
             <h4 className="font-medium text-foreground">Investment Summary</h4>
             <p className="text-xs text-muted-foreground">
-              Your monthly SIP of <span className="font-medium text-primary">{formatCurrency(totalInvested / (Math.max(1, totalInvested / 5000) * 12))}</span> will grow to{' '}
+              Your monthly SIP of <span className="font-medium text-primary">{formatCurrency(monthlyInvestment)}</span> will grow to{' '}
               <span className="font-medium text-success">{formatCurrency(maturityValue)}</span>{' '}
               generating <span className="font-medium text-success">{formatCurrency(totalInterest)}</span> in returns
             </p>

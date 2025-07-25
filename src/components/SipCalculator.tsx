@@ -179,6 +179,7 @@ export const SipCalculator: React.FC = () => {
             totalInvested={results.totalInvested}
             totalInterest={results.totalInterest}
             maturityValue={results.maturityValue}
+            monthlyInvestment={inputs.monthlyInvestment}
             isValid={isValid}
           />
         </div>
