@@ -117,21 +117,6 @@ export const useSipCalculator = () => {
     const totalMonths = investmentDuration * 12;
     const totalInvested = monthlyInvestment * totalMonths;
 
-    // Debug test cases
-    const testCases = [
-      [5000, 12, 10, 1161695],
-      [1000, 10, 5, 77382],
-      [10000, 15, 25, 23868223],
-      [1234.56, 10.5, 17, 622000],
-      [3000, 0, 20, 720000]
-    ];
-    
-    const currentCase = testCases.find(tc => 
-      Math.abs(tc[0] - monthlyInvestment) < 1 && 
-      Math.abs(tc[1] - annualReturnRate) < 0.1 && 
-      Math.abs(tc[2] - investmentDuration) < 1
-    );
-
     let maturityValue: number;
 
     // Handle zero interest rate case
@@ -142,12 +127,6 @@ export const useSipCalculator = () => {
       const compound = Math.pow(1 + monthlyRate, totalMonths);
       const numerator = (compound - 1) / monthlyRate;
       maturityValue = monthlyInvestment * numerator * (1 + monthlyRate);
-    }
-
-    if (currentCase) {
-      console.log(`Test Case: P=${monthlyInvestment}, R=${annualReturnRate}%, Y=${investmentDuration}`);
-      console.log(`Expected: ₹${currentCase[3].toLocaleString()}, Got: ₹${Math.round(maturityValue).toLocaleString()}`);
-      console.log(`Difference: ${((Math.round(maturityValue) - currentCase[3]) / currentCase[3] * 100).toFixed(2)}%`);
     }
 
     const totalInterest = maturityValue - totalInvested;

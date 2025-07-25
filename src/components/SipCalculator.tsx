@@ -1,13 +1,12 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { RotateCcw, TrendingUp, Calculator } from 'lucide-react';
-import { useSipCalculator, formatCurrency } from '@/hooks/useSipCalculator';
-import { SipChart } from './SipChart';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { Calculator, TrendingUp } from 'lucide-react-native';
+import { useSipCalculator } from '../hooks/useSipCalculator';
+import { InputSection } from './InputSection';
 import { ResultsCard } from './ResultsCard';
+import { SipChart } from './SipChart';
+
+const { width } = Dimensions.get('window');
 
 export const SipCalculator: React.FC = () => {
   const {
@@ -21,181 +20,114 @@ export const SipCalculator: React.FC = () => {
   } = useSipCalculator();
 
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-6">
+    <View style={styles.container}>
       {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-primary/10 to-success/10 rounded-full">
-          <Calculator className="w-5 h-5 text-primary" />
-          <span className="font-medium text-foreground">SIP Calculator</span>
-        </div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-          Plan Your Financial Future
-        </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+      <View style={styles.header}>
+        <View style={styles.headerBadge}>
+          <Calculator size={20} color="#3b82f6" />
+          <Text style={styles.headerBadgeText}>SIP Calculator</Text>
+        </View>
+        <Text style={styles.title}>Plan Your Financial Future</Text>
+        <Text style={styles.subtitle}>
           Calculate your SIP returns with our professional investment calculator. 
           Start your systematic investment journey today.
-        </p>
-      </div>
+        </Text>
+      </View>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Input Section */}
-        <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              Investment Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Monthly Investment */}
-            <div className="space-y-3">
-              <Label htmlFor="monthlyInvestment" className="text-sm font-medium">
-                Monthly Investment
-              </Label>
-              <div className="space-y-2">
-                <Input
-                  id="monthlyInvestment"
-                  type="number"
-                  value={inputs.monthlyInvestment}
-                  onChange={(e) => updateInput('monthlyInvestment', Number(e.target.value))}
-                  className={`text-lg ${getFieldError('monthlyInvestment') ? 'border-destructive' : ''}`}
-                  placeholder="Enter amount"
-                />
-                <Slider
-                  value={[inputs.monthlyInvestment]}
-                  onValueChange={(value) => updateInput('monthlyInvestment', value[0])}
-                  max={100000}
-                  min={500}
-                  step={500}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>₹500</span>
-                  <span className="font-medium text-primary">
-                    {formatCurrency(inputs.monthlyInvestment)}
-                  </span>
-                  <span>₹1L</span>
-                </div>
-                {getFieldError('monthlyInvestment') && (
-                  <p className="text-xs text-destructive mt-1">
-                    {getFieldError('monthlyInvestment')}
-                  </p>
-                )}
-              </div>
-            </div>
+      {/* Input Section */}
+      <InputSection
+        inputs={inputs}
+        updateInput={updateInput}
+        resetInputs={resetInputs}
+        getFieldError={getFieldError}
+      />
 
-            {/* Expected Annual Return */}
-            <div className="space-y-3">
-              <Label htmlFor="annualReturn" className="text-sm font-medium">
-                Expected Annual Return (%)
-              </Label>
-              <div className="space-y-2">
-                <Input
-                  id="annualReturn"
-                  type="number"
-                  step="0.1"
-                  value={inputs.annualReturnRate}
-                  onChange={(e) => updateInput('annualReturnRate', Number(e.target.value))}
-                  className={`text-lg ${getFieldError('annualReturnRate') ? 'border-destructive' : ''}`}
-                  placeholder="Enter rate"
-                />
-                <Slider
-                  value={[inputs.annualReturnRate]}
-                  onValueChange={(value) => updateInput('annualReturnRate', value[0])}
-                  max={30}
-                  min={1}
-                  step={0.5}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>1%</span>
-                  <span className="font-medium text-primary">
-                    {inputs.annualReturnRate}%
-                  </span>
-                  <span>30%</span>
-                </div>
-                {getFieldError('annualReturnRate') && (
-                  <p className="text-xs text-destructive mt-1">
-                    {getFieldError('annualReturnRate')}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Investment Duration */}
-            <div className="space-y-3">
-              <Label htmlFor="duration" className="text-sm font-medium">
-                Investment Duration (Years)
-              </Label>
-              <div className="space-y-2">
-                <Input
-                  id="duration"
-                  type="number"
-                  step="0.5"
-                  min="0.5"
-                  value={inputs.investmentDuration}
-                  onChange={(e) => updateInput('investmentDuration', Number(e.target.value))}
-                  className={`text-lg ${getFieldError('investmentDuration') ? 'border-destructive' : ''}`}
-                  placeholder="Enter years"
-                />
-                <Slider
-                  value={[inputs.investmentDuration]}
-                  onValueChange={(value) => updateInput('investmentDuration', value[0])}
-                  max={40}
-                  min={1}
-                  step={1}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>1 Year</span>
-                  <span className="font-medium text-primary">
-                    {inputs.investmentDuration} Years
-                  </span>
-                  <span>40 Years</span>
-                </div>
-                {getFieldError('investmentDuration') && (
-                  <p className="text-xs text-destructive mt-1">
-                    {getFieldError('investmentDuration')}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Reset Button */}
-            <Button
-              onClick={resetInputs}
-              variant="outline"
-              className="w-full"
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Reset Values
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Results Section */}
-        <div className="space-y-6">
-          <ResultsCard
-            totalInvested={results.totalInvested}
-            totalInterest={results.totalInterest}
-            maturityValue={results.maturityValue}
-            monthlyInvestment={inputs.monthlyInvestment}
-            isValid={isValid}
-          />
-        </div>
-      </div>
+      {/* Results Section */}
+      <ResultsCard
+        totalInvested={results.totalInvested}
+        totalInterest={results.totalInterest}
+        maturityValue={results.maturityValue}
+        monthlyInvestment={inputs.monthlyInvestment}
+        isValid={isValid}
+      />
 
       {/* Chart Section */}
       {isValid && results.yearlyData.length > 0 && (
-        <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/50">
-          <CardHeader>
-            <CardTitle>Investment Growth Over Time</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SipChart data={results.yearlyData} />
-          </CardContent>
-        </Card>
+        <View style={styles.chartSection}>
+          <View style={styles.chartHeader}>
+            <TrendingUp size={20} color="#3b82f6" />
+            <Text style={styles.chartTitle}>Investment Growth Over Time</Text>
+          </View>
+          <SipChart data={results.yearlyData} />
+        </View>
       )}
-    </div>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#f8fafc',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 16,
+  },
+  headerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eff6ff',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginBottom: 16,
+  },
+  headerBadgeText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1e40af',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#1e293b',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#64748b',
+    textAlign: 'center',
+    lineHeight: 24,
+    maxWidth: width - 64,
+  },
+  chartSection: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  chartHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  chartTitle: {
+    marginLeft: 8,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1e293b',
+  },
+});
