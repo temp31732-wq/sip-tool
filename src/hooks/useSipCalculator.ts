@@ -84,6 +84,14 @@ export const useSipCalculator = () => {
     const totalMonths = investmentDuration * 12;
     const totalInvested = monthlyInvestment * totalMonths;
 
+    console.log('Test Case Debug:', {
+      P: monthlyInvestment,
+      'Annual Rate': annualReturnRate,
+      'Monthly Rate': monthlyRate,
+      'Total Months': totalMonths,
+      'Total Invested': totalInvested
+    });
+
     let maturityValue: number;
 
     // Handle zero interest rate case
@@ -92,7 +100,14 @@ export const useSipCalculator = () => {
     } else {
       // Standard SIP formula: FV = P × [{(1 + r)^n – 1} / r] × (1 + r)
       const compound = Math.pow(1 + monthlyRate, totalMonths);
-      maturityValue = monthlyInvestment * ((compound - 1) / monthlyRate) * (1 + monthlyRate);
+      const numerator = (compound - 1) / monthlyRate;
+      maturityValue = monthlyInvestment * numerator * (1 + monthlyRate);
+      
+      console.log('SIP Calculation Debug:', {
+        compound: compound,
+        numerator: numerator,
+        'Final FV': maturityValue
+      });
     }
 
     const totalInterest = maturityValue - totalInvested;
