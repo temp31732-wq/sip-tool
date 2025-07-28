@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import Animated, { FadeInRight, FadeInLeft } from 'react-native-reanimated';
-import { Target, PiggyBank, TrendingUp, AlertCircle, Award, Calendar, Percent } from 'lucide-react-native';
+import { Target, PiggyBank, TrendingUp, CircleAlert as AlertCircle, Award, Calendar, Percent } from 'lucide-react-native';
 import { formatCurrency, SipInputs } from '../hooks/useSipCalculator';
 
 interface ResultsCardProps {
